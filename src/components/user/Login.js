@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import axios from 'axios'
+import axiosWithAuth from '../../utils/axiosWithAuth'
 import { useHistory } from 'react-router-dom'
 import { Row, Col, Form, FormGroup, Label, Input, Button, Spinner } from 'reactstrap'
 
@@ -24,7 +24,7 @@ const Login = () => {
     const handleSubmit = e => {
         e.preventDefault()
 
-        axios.post('http://localhost:5000/api/login', credentials)
+        axiosWithAuth().post('/auth/login', credentials)
             .then(res => {
                 console.log(res)
                 setError('')
