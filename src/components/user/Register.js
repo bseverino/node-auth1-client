@@ -1,18 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import axiosWithAuth from '../../utils/axiosWithAuth'
 import { useHistory } from 'react-router-dom'
 import { Row, Col, Form, FormGroup, Label, Input, Button, Spinner } from 'reactstrap'
+
+import { loginStart } from '../../store/actions'
 
 const initialCredentials = {
     username: '',
     password: ''
 }
 
-const Register = () => {
+const Register = props => {
     const history = useHistory()
+    const loggedIn = props.loggedIn
+    const loginStart = props.loginStart
+
     const [credentials, setCredentials] = useState(initialCredentials)
     const [error, setError] = useState('')
     const [isFetching, setIsFetching] = useState(false)
+
+    useEffect(() => {
+        loggedIn && history.push('/users')
+    }, [loggedIn])
 
     const handleChange = e => {
         setCredentials({
@@ -27,13 +37,7 @@ const Register = () => {
         axiosWithAuth().post('/auth/register', credentials)
             .then(res => {
                 console.log(res)
-                setError('')
-                setIsFetching(true)
-                axiosWithAuth().post('/auth/login', credentials)
-                    .then(res => {
-                        console.log(res)
-                        history.push('/users')
-                    })
+                loginStart(credentials)
             })
             .catch(err => {
                 console.log(err)
@@ -77,4 +81,10 @@ const Register = () => {
     )
 }
 
-export default Register
+const mapStateToProps = state => {
+    return {
+        loggedIn: state.loggedIn
+    }
+}
+
+export default connect(mapStateToProps, { loginStart })(Register)

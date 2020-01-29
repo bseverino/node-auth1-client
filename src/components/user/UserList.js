@@ -5,13 +5,11 @@ import { Row, Col, Card, CardBody } from 'reactstrap'
 import { getUsers } from '../../store/actions'
 
 const UserList = props => {
-    const users = props.users
     const getUsers = props.getUsers
+
     useEffect(() => {
-        if (!users) {
-            getUsers()
-        }
-    }, [users, getUsers])
+        getUsers()
+    }, [getUsers])
 
     return (
         <div>

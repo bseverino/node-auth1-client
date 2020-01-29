@@ -2,6 +2,8 @@ import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { Container } from 'reactstrap'
 
+import PrivateRoute from './utils/PrivateRoute'
+
 import Navigation from './components/Navigation'
 import UserList from './components/user/UserList'
 import Register from './components/user/Register'
@@ -12,9 +14,9 @@ function App() {
     <Container>
       <Navigation />
       <Switch>
-        <Route path='/users' render={() => <UserList />} />
-        <Route path='/register' render={() => <Register />} />
-        <Route path='/' render={() => <Login />} />
+        <PrivateRoute path='/users' component={UserList} />
+        <Route path='/register' component={Register} />
+        <Route path='/' component={Login} />
       </Switch>
     </Container>
   )

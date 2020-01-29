@@ -1,18 +1,27 @@
-import React, { useState } from 'react'
-import axiosWithAuth from '../../utils/axiosWithAuth'
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { Row, Col, Form, FormGroup, Label, Input, Button, Spinner } from 'reactstrap'
+
+import { loginStart } from '../../store/actions'
 
 const initialCredentials = {
     username: '',
     password: ''
 }
 
-const Login = () => {
+const Login = props => {
     const history = useHistory()
+    const loggedIn = props.loggedIn
+    const loginStart = props.loginStart
+
     const [credentials, setCredentials] = useState(initialCredentials)
     const [error, setError] = useState('')
     const [isFetching, setIsFetching] = useState(false)
+
+    useEffect(() => {
+        loggedIn && history.push('/users')
+    }, [loggedIn])
 
     const handleChange = e => {
         setCredentials({
@@ -23,18 +32,19 @@ const Login = () => {
 
     const handleSubmit = e => {
         e.preventDefault()
+        loginStart(credentials)
 
-        axiosWithAuth().post('/auth/login', credentials)
-            .then(res => {
-                console.log(res)
-                setError('')
-                setIsFetching(true)
-                history.push('/users')
-            })
-            .catch(err => {
-                console.log(err)
-                setError('Username and/or password incorrect.')
-            })
+        // axiosWithAuth().post('/auth/login', credentials)
+        //     .then(res => {
+        //         console.log(res)
+        //         setError('')
+        //         setIsFetching(true)
+        //         history.push('/users')
+        //     })
+        //     .catch(err => {
+        //         console.log(err)
+        //         setError('Username and/or password incorrect.')
+        //     })
     }
 
     return (
@@ -73,4 +83,10 @@ const Login = () => {
     )
 }
 
-export default Login
+const mapStateToProps = state => {
+    return {
+        loggedIn: state.loggedIn
+    }
+}
+
+export default connect(mapStateToProps, { loginStart })(Login)
